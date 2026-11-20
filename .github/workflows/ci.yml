@@ -19,7 +19,7 @@ jobs:
     name: Build ve test (Java 25)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Java 25 kur
         uses: actions/setup-java@v5
@@ -35,7 +35,7 @@ jobs:
     name: Kind cluster smoke testi
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # Yalnızca kind'ı kurar; cluster'ı yereldeki betikle aynı şekilde oluşturuyoruz.
       - name: kind kur
