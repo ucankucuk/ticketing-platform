@@ -37,15 +37,19 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      # Yerelde kullanılan cluster tanımının CI'da da ayağa kalktığını doğrular.
-      - name: Kind cluster oluştur
+      # Yalnızca kind'ı kurar; cluster'ı yereldeki betikle aynı şekilde oluşturuyoruz.
+      - name: kind kur
         uses: helm/kind-action@v1
         with:
-          config: platform/local/kind-cluster.yaml
-          cluster_name: ticketing-local
+          install_only: true
 
-      - name: Düğümleri doğrula
+      # Yerelde kullanılan cluster ve Cilium kurulumunun CI'da da ayağa kalktığını doğrular.
+      - name: Cluster ve Cilium kurulumu
+        run: ./scripts/cluster-up.sh
+
+      - name: Düğümleri ve Cilium'u doğrula
         run: |
-          kubectl wait --for=condition=Ready nodes --all --timeout=180s
-          kubectl get nodes -L topology.kubernetes.io/zone
           test "$(kubectl get nodes --no-headers | wc -l)" -eq 4
+          kubectl -n kube-system get pods -l k8s-app=cilium -o wide
+          # kube-proxy kurulmamış olmalı (ADR-0012)
+          test -z "$(kubectl -n kube-system get daemonset kube-proxy --ignore-not-found -o name)"

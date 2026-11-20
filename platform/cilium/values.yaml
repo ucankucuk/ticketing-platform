@@ -1,0 +1,30 @@
+# Cilium Helm değerleri (yerel kind cluster'ı için).
+# Chart sürümü scripts/cluster-up.sh içindeki CILIUM_VERSION ile sabitlenir.
+
+# kube-proxy yerine Cilium'un eBPF tabanlı Service yük dengelemesi.
+kubeProxyReplacement: true
+
+# kube-proxy olmadığı için Cilium API server'a Service IP'si üzerinden değil,
+# doğrudan control-plane düğümünün adı ve portu üzerinden bağlanır.
+# kind düğümleri Docker ağında birbirini bu adla çözebilir.
+k8sServiceHost: ticketing-local-control-plane
+k8sServicePort: 6443
+
+# Pod IP'leri, Kubernetes'in her düğüme verdiği PodCIDR'den dağıtılır.
+ipam:
+  mode: kubernetes
+
+# Yerel ortamda tek bir operator kopyası yeterli.
+operator:
+  replicas: 1
+
+# Hubble: ağ trafiğinin görünürlüğü (kim kiminle konuşuyor, ne engellendi).
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+  ui:
+    enabled: true
+
+image:
+  pullPolicy: IfNotPresent

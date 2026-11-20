@@ -2,16 +2,17 @@
 # Üretime yakınlık için 1 control-plane + 3 worker düğümü kullanılır.
 # Worker'lar farklı "zone" etiketleri taşır; böylece topology spread,
 # pod anti-affinity ve PodDisruptionBudget davranışları yerelde denenebilir.
-#
-# Not: CNI ve cluster girişi (Gateway API) kararları henüz verilmedi.
-# Karar verilince bu dosyada disableDefaultCNI ve port eşlemeleri güncellenecek.
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 name: ticketing-local
+networking:
+  # CNI olarak Cilium kullanılır (ADR-0012). kind'ın varsayılan CNI'ı (kindnet)
+  # kurulmaz; Cilium kurulana kadar düğümler NotReady kalır, bu beklenen durumdur.
+  disableDefaultCNI: true
+  # kube-proxy kurulmaz; Service yük dengelemesini Cilium eBPF ile yapar.
+  kubeProxyMode: "none"
 nodes:
   - role: control-plane
-    labels:
-      ingress-ready: "true"
   - role: worker
     labels:
       topology.kubernetes.io/region: local-1
