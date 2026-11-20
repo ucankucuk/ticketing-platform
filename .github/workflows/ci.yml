@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# En az yetki ilkesi: iş akışları varsayılan olarak yalnızca okuma yetkisi alır.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build ve test (Java 25)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Java 25 kur
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+
+      - name: Maven verify
+        run: mvn --batch-mode --no-transfer-progress verify
+
+  cluster-smoke:
+    name: Kind cluster smoke testi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # Yerelde kullanılan cluster tanımının CI'da da ayağa kalktığını doğrular.
+      - name: Kind cluster oluştur
+        uses: helm/kind-action@v1
+        with:
+          config: platform/local/kind-cluster.yaml
+          cluster_name: ticketing-local
+
+      - name: Düğümleri doğrula
+        run: |
+          kubectl wait --for=condition=Ready nodes --all --timeout=180s
+          kubectl get nodes -L topology.kubernetes.io/zone
+          test "$(kubectl get nodes --no-headers | wc -l)" -eq 4

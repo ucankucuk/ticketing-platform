@@ -1,0 +1,26 @@
+# Yerel geliştirme cluster'ı (kind).
+# Üretime yakınlık için 1 control-plane + 3 worker düğümü kullanılır.
+# Worker'lar farklı "zone" etiketleri taşır; böylece topology spread,
+# pod anti-affinity ve PodDisruptionBudget davranışları yerelde denenebilir.
+#
+# Not: CNI ve cluster girişi (Gateway API) kararları henüz verilmedi.
+# Karar verilince bu dosyada disableDefaultCNI ve port eşlemeleri güncellenecek.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: ticketing-local
+nodes:
+  - role: control-plane
+    labels:
+      ingress-ready: "true"
+  - role: worker
+    labels:
+      topology.kubernetes.io/region: local-1
+      topology.kubernetes.io/zone: local-1a
+  - role: worker
+    labels:
+      topology.kubernetes.io/region: local-1
+      topology.kubernetes.io/zone: local-1b
+  - role: worker
+    labels:
+      topology.kubernetes.io/region: local-1
+      topology.kubernetes.io/zone: local-1c

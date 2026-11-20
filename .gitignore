@@ -1,0 +1,33 @@
+# Maven
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# İşletim sistemi
+.DS_Store
+Thumbs.db
+
+# Node (önyüzler)
+node_modules/
+dist/
+
+# Gizli bilgiler: asla commit edilmez
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.jks
+kubeconfig*
+secrets/
+
+# Helm
+deploy/helm/charts/*/charts/
+*.tgz

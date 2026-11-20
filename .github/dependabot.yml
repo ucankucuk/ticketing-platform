@@ -1,0 +1,18 @@
+version: 2
+updates:
+  # Spring Boot ve diğer Maven bağımlılıkları
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      spring:
+        patterns:
+          - "org.springframework*"
+
+  # GitHub Actions sürümleri
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
