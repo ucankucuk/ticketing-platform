@@ -45,7 +45,7 @@ jobs:
 
       # Yerelde kullanılan cluster ve Cilium kurulumunun CI'da da ayağa kalktığını doğrular.
       - name: Cluster ve Cilium kurulumu
-        run: ./scripts/cluster-up.sh
+        run: ./scripts/cluster-up.sh --no-argocd
 
       - name: Düğümleri ve Cilium'u doğrula
         run: |

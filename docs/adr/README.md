@@ -13,3 +13,11 @@
 | 0009 | [Hücre modeline hazır tasarım, tek bölgeyle başlangıç](0009-regional-cells-single-region-start.md) | Kabul edildi (varsayım) |
 | 0010 | [Bekleme odasında sıralama stratejisi](0010-waiting-room-ordering.md) | Kabul edildi (varsayım) |
 | 0011 | [Arka ofis, kimlik alanları ve yetki modeli](0011-back-office.md) | Kabul edildi |
+| 0012 | [CNI olarak Cilium](0012-cni-cilium.md) | Kabul edildi |
+| 0013 | [Cluster girişi için Gateway API ve Envoy Gateway](0013-gateway-api-envoy-gateway.md) | Kabul edildi |
+| 0014 | [Secret yönetimi için External Secrets Operator ve OpenBao](0014-secrets-eso-openbao.md) | Kabul edildi |
+| 0015 | [Dockerfile + buildx ile multi-arch imajlar ve GitHub Container Registry](0015-container-images.md) | Kabul edildi |
+| 0016 | [Gözlemlenebilirlik için OpenTelemetry ve Grafana yığını](0016-observability-otel-lgtm.md) | Kabul edildi |
+| 0017 | [Service mesh şimdilik kullanılmıyor](0017-service-mesh-deferred.md) | Kabul edildi |
+| 0018 | [TLS için cert-manager ve yerel CA](0018-tls-cert-manager.md) | Kabul edildi |
+| 0019 | [Argo CD kurulumu ve GitOps yapısı](0019-argocd-gitops-structure.md) | Kabul edildi |

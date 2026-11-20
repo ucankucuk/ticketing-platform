@@ -1,0 +1,24 @@
+# Argo CD'nin kendini yönetmesi (self-management, ADR-0019).
+# Argo CD sürümünü yükseltmek için bootstrap/kustomization.yaml'daki sürümü
+# değiştiren bir PR yeterli.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ucankucuk/ticketing-platform.git
+    targetRevision: main
+    path: deploy/argocd/bootstrap
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      # Argo CD CRD'leri, istemci tarafı apply'ın annotation sınırını aşacak kadar büyük.
+      - ServerSideApply=true
