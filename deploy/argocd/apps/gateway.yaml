@@ -1,0 +1,32 @@
+# Public Gateway: GatewayClass, Gateway, TLS sertifikası ve HTTPS yönlendirmesi (ADR-0013, ADR-0018).
+# envoy-gateway ve cert-manager'dan ayrı bir Application: CRD'leri hazır olmadan bu
+# kaynaklar uygulanamaz. Sıralama, cert-manager-issuers'ta olduğu gibi yeniden deneme ile sağlanır.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gateway
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ucankucuk/ticketing-platform.git
+    targetRevision: main
+    path: platform/gateway
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gateway
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      # CRD'ler henüz yokken dry-run hatası yerine bekleyip yeniden dener.
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 10
+      backoff:
+        duration: 15s
+        factor: 2
+        maxDuration: 5m

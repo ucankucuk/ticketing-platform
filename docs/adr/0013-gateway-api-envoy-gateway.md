@@ -20,6 +20,11 @@ Dış trafiğin cluster'a girişi için bir uygulama seçilmeli. Ingress NGINX M
 
 Gateway API kaynakları (GatewayClass, Gateway, HTTPRoute) ve Envoy Gateway kullanılır. Ingress API kullanılmaz.
 
+- Envoy Gateway v1.10.0, OCI Helm chart'ıyla Argo CD üzerinden kurulur (`deploy/argocd/apps/envoy-gateway.yaml`). Gateway API CRD'leri (standart kanal) chart ile gelir.
+- Cluster'da tek bir `public` Gateway vardır (`platform/gateway`, `gateway` namespace'i). `http` (80) listener'ı yalnızca HTTPS'e 301 yönlendirmesi yapar; `https` (443) listener'ında TLS sonlanır. Sertifika `*.ticketing.localhost` için cert-manager'ın `local-ca` issuer'ından gelir (ADR-0018).
+- Servisler kendi namespace'lerinde HTTPRoute tanımlayıp `public` Gateway'in `https` listener'ına bağlanır. Bunun için namespace'in `ticketing.io/gateway-access: "true"` etiketini taşıması gerekir; etiketsiz namespace'lerin route'ları reddedilir.
+- Yerelde LoadBalancer olmadığından Envoy'un Service'i sabit NodePort'ludur (30080/30443); kind bunları host'un `127.0.0.1:80/443` portlarına eşler.
+
 ## Sonuçlar
 
 Uygulamaya özel annotation bağımlılığı olmaz; yönlendirme kuralları taşınabilir kalır.

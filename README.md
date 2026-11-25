@@ -55,6 +55,12 @@ Gereksinimler: Docker, [kind](https://kind.sigs.k8s.io/), kubectl, Helm, Java 25
 mvn verify                   # build ve testler
 ```
 
+Servisler `https://<servis>.ticketing.localhost` adresinden yayınlanır. Sertifika cluster içindeki yerel CA tarafından imzalanır; tarayıcı ve `curl` uyarı vermesin diye CA sertifikasını alıp sisteme güvenilir olarak ekleyebilirsiniz:
+
+```bash
+kubectl -n cert-manager get secret local-ca-root -o jsonpath='{.data.ca\.crt}' | base64 -d > local-ca.crt
+```
+
 ## Lisans
 
 [Apache License 2.0](LICENSE)

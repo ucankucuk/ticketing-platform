@@ -1,0 +1,35 @@
+# Envoy Gateway ve Gateway API CRD'leri (ADR-0013).
+# Chart Docker Hub'daki OCI deposundan, değerler bu repodaki platform/envoy-gateway
+# dizininden gelir (çoklu kaynak). Sürüm yükseltmesi targetRevision'ı değiştiren bir PR'dır.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: envoy-gateway
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  sources:
+    - repoURL: oci://docker.io/envoyproxy/gateway-helm
+      targetRevision: v1.10.0
+      # OCI kaynağında chart, artefaktın kökündedir.
+      path: .
+      helm:
+        releaseName: eg
+        valueFiles:
+          - $values/platform/envoy-gateway/values.yaml
+    - repoURL: https://github.com/ucankucuk/ticketing-platform.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: envoy-gateway-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      # Gateway API CRD'leri, istemci tarafı apply'ın annotation sınırını aşacak kadar büyük.
+      - ServerSideApply=true
