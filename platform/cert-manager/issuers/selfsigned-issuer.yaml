@@ -1,0 +1,8 @@
+# Yalnızca yerel kök CA sertifikasını imzalamak için kullanılan self-signed issuer.
+# Uygulama sertifikaları bunu değil, aşağıdaki local-ca issuer'ını kullanır.
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-bootstrap
+spec:
+  selfSigned: {}

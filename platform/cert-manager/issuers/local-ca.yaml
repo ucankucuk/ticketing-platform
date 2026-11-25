@@ -1,0 +1,32 @@
+# Yerel kök CA (ADR-0018).
+# cert-manager bu sertifikayı üretir ve anahtarını cert-manager namespace'indeki
+# local-ca-root Secret'ında tutar. ClusterIssuer CA anahtarını kendi
+# namespace'inden (cluster resource namespace = cert-manager) okur.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: local-ca-root
+  namespace: cert-manager
+spec:
+  isCA: true
+  commonName: Ticketing Platform Local CA
+  secretName: local-ca-root
+  duration: 87600h # 10 yıl
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: selfsigned-bootstrap
+---
+# Gateway ve servis sertifikalarını imzalayan issuer. Sertifika isteyen her kaynak
+# issuerRef olarak bunu kullanır.
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: local-ca
+spec:
+  ca:
+    secretName: local-ca-root
