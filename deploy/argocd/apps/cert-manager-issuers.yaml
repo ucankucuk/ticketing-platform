@@ -1,0 +1,33 @@
+# Yerel CA ve ClusterIssuer'lar (ADR-0018).
+# cert-manager'dan ayrı bir Application: CRD'ler ve webhook hazır olmadan bu
+# kaynaklar uygulanamaz. Argo CD, alt Application'ların sağlığını beklemediği için
+# sıralama sync dalgasıyla değil, yeniden deneme ile sağlanır.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager-issuers
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ucankucuk/ticketing-platform.git
+    targetRevision: main
+    path: platform/cert-manager/issuers
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      # CRD'ler henüz yokken dry-run hatası yerine bekleyip yeniden dener.
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 10
+      backoff:
+        duration: 15s
+        factor: 2
+        maxDuration: 5m

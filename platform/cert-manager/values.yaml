@@ -1,0 +1,22 @@
+# cert-manager Helm değerleri (ADR-0018).
+# Chart sürümü deploy/argocd/apps/cert-manager.yaml içinde sabitlenir.
+
+# CRD'ler chart ile birlikte kurulur ve Argo CD tarafından yönetilir.
+# keep: chart kaldırılsa bile CRD'ler (ve onlara bağlı Certificate'lar) silinmez.
+crds:
+  enabled: true
+  keep: true
+
+# Yerel ortamda her bileşenden tek kopya yeterli.
+replicaCount: 1
+webhook:
+  replicaCount: 1
+cainjector:
+  replicaCount: 1
+
+# Metrikler Faz 6'da (ADR-0016) Prometheus tarafından toplanacak; şimdilik
+# yalnızca endpoint açık, ServiceMonitor kurulmaz.
+prometheus:
+  enabled: true
+  servicemonitor:
+    enabled: false

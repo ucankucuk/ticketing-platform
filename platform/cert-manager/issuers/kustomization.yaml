@@ -1,0 +1,6 @@
+# Yerel CA zinciri (ADR-0018): selfsigned-bootstrap -> local-ca-root -> local-ca
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - selfsigned-issuer.yaml
+  - local-ca.yaml
