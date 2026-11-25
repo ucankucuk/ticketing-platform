@@ -13,6 +13,18 @@ networking:
   kubeProxyMode: "none"
 nodes:
   - role: control-plane
+    # Host'un 80/443 portları, public Gateway'in Envoy Service'indeki sabit
+    # NodePort'lara gider (platform/gateway/envoyproxy.yaml). Yalnız 127.0.0.1'e
+    # açılır; https://<servis>.ticketing.localhost adresleri böylece doğrudan çalışır.
+    extraPortMappings:
+      - containerPort: 30080
+        hostPort: 80
+        listenAddress: "127.0.0.1"
+        protocol: TCP
+      - containerPort: 30443
+        hostPort: 443
+        listenAddress: "127.0.0.1"
+        protocol: TCP
   - role: worker
     labels:
       topology.kubernetes.io/region: local-1

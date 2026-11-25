@@ -1,0 +1,33 @@
+# Cluster'ın dış trafik giriş noktası (ADR-0013).
+# - http (80): yalnızca HTTPS'e yönlendirme yapar (https-redirect.yaml).
+# - https (443): TLS burada sonlanır; servisler HTTPRoute ile bu listener'a bağlanır.
+# Route ekleyebilecek namespace'ler ticketing.io/gateway-access=true etiketiyle
+# açıkça işaretlenir; böylece rastgele bir namespace dışarıya açılamaz.
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: public
+  namespace: gateway
+spec:
+  gatewayClassName: envoy
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: public-gateway-tls
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              ticketing.io/gateway-access: "true"

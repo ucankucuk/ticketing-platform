@@ -1,0 +1,11 @@
+# Envoy Gateway Helm değerleri (ADR-0013).
+# Chart sürümü deploy/argocd/apps/envoy-gateway.yaml içinde sabitlenir.
+
+# Gateway API CRD'leri (standart kanal) ve Envoy Gateway CRD'leri chart ile
+# birlikte kurulur ve Argo CD tarafından yönetilir.
+crds:
+  enabled: true
+
+# Yerel ortamda tek controller kopyası yeterli.
+deployment:
+  replicas: 1

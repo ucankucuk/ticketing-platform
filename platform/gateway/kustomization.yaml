@@ -1,0 +1,10 @@
+# Public Gateway (ADR-0013): GatewayClass, Envoy proxy ayarları ve TLS sertifikası.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - envoyproxy.yaml
+  - gatewayclass.yaml
+  - certificate.yaml
+  - gateway.yaml
+  - https-redirect.yaml

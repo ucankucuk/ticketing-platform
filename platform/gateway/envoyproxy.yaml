@@ -1,0 +1,26 @@
+# Envoy Gateway'in her Gateway için oluşturduğu Envoy proxy'sinin ayarları.
+# kind'da LoadBalancer IP'si dağıtan bir bileşen yok. Envoy'un Service'i sabit
+# portlu NodePort olur; kind, host'un 80/443 portlarını control-plane düğümündeki
+# bu NodePort'lara yönlendirir (platform/local/kind-cluster.yaml, extraPortMappings).
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: local
+  namespace: gateway
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyDeployment:
+        replicas: 1
+      envoyService:
+        type: NodePort
+        patch:
+          type: StrategicMerge
+          value:
+            spec:
+              ports:
+                - port: 80
+                  nodePort: 30080
+                - port: 443
+                  nodePort: 30443
